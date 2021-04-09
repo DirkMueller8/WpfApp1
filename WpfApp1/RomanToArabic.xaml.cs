@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace WpfApp1
 {
+    // Author: Dirk Mueller
+    // Date: 09.04.2021
+    //
+    // Algorithm:
+    // 1. Check the validity of the inout 
+    // 2. If correct traverse the roman number from left to right. Distinguish between
+    //    the case where a subtraction is necessary, and where not
+    // 3. Successively add the number until the cummulative value is the final
+
+
     public class MainLogic1
     {
         readonly SortedDictionary<int, char> numberLetter = new SortedDictionary<int, char>
@@ -24,6 +28,7 @@ namespace WpfApp1
         };
 
         public int? GetValueForKey(char letter)
+
         {
             int result;
             if (letterNumber.TryGetValue(letter, out result))
@@ -44,21 +49,25 @@ namespace WpfApp1
                 return false;
         }
 
+        // Calculate arabic number. If not possible return null:
         public int? CalculateArabicNumber(string romanNumber)
         {
             int? cummulativeValue = 0;
             int i = 0;
+            string messageText;
+
             StringBuilder sb = new StringBuilder();
             romanNumber = romanNumber.TrimEnd(' ');
-            string tempString = romanNumber.ToUpper();
-            sb.Append(tempString.ToUpper());
+            string romanToUpper = romanNumber.ToUpper();
+            sb.Append(romanToUpper);
 
             // Check if the input does not represent an existing roman number:
-            if (ForbiddenCombinationOrMaximumNumberOfSameLetterExceeded(tempString))
+            if (ForbiddenCombinationOrMaximumNumberOfSameLetterExceeded(romanToUpper))
             {
                 return null;
             }
-            // Special case of only one roman letter:
+
+            // Special case if only one roman letter:
             if (sb.Length == 1)
             {
                 cummulativeValue = GetValueForKey(sb[0]);
@@ -81,8 +90,11 @@ namespace WpfApp1
                 }
                 i++;
             }
+
             return cummulativeValue;
         }
+
+        // Return true if the input did not obey the rules (not a roman number):
         public Boolean ForbiddenCombinationOrMaximumNumberOfSameLetterExceeded(string str)
         {
             // Define array with characters M, C, X, I from sorted dictionary:
@@ -94,14 +106,13 @@ namespace WpfApp1
                                          numberLetter[500] };
 
             int countRepititions = 0;
-
             // For each of the characters M, C, X, I calculate amount of repititions:
             foreach (var item in chMCXI)
             {
                 for (int m = 0; m < str.Length - 1; m++)
                 {
-                    // Check if the running character is any of ('M', 'C', 'X', 'I') AND if it repeats 
-                    // with the next character:
+                    // Check if the running character is any of ('M', 'C', 'X', 'I') AND 
+                    // if it repeats with the next character:
                     if ((str[m] == item) && str[m] == str[m + 1])
                         countRepititions++;
                 }
@@ -118,7 +129,7 @@ namespace WpfApp1
             {
                 for (int m = 0; m < str.Length - 1; m++)
                 {
-                    // Check if the running character is any of ('M', 'C', 'X', 'I') 
+                    // Check if the running character is any of ('V', 'L', 'D') 
                     // AND if it repeats with the next character:
                     if ((str[m] == item) && str[m] == str[m + 1])
                         countRepititions++;
@@ -169,6 +180,7 @@ namespace WpfApp1
                     return true;
                 }
             }
+
             // In all other cases it is a valid input and return false:
             return false;
         }
@@ -176,8 +188,7 @@ namespace WpfApp1
         // Return false if any input character does not represent a roman number:
         public Boolean AllCharactersPresentedAreUsedInRomaNumbers(string str)
         {
-            string str1 = str.ToUpper();
-            foreach (var item in str1)
+            foreach (var item in str.ToUpper())
             {
                 if (!letterNumber.ContainsKey(item))
                     return false;
@@ -185,9 +196,8 @@ namespace WpfApp1
             return true;
         }
     }
-    /// <summary>
-    /// Interaction logic for Window2.xaml
-    /// </summary>
+
+
     public partial class Window2 : Window
     {
         public Window2()
@@ -202,13 +212,14 @@ namespace WpfApp1
         private void btnConvert_Click(object sender, RoutedEventArgs e)
         {
             int? value;
-            MainLogic1 gfi = new MainLogic1();
+            MainLogic1 ml1 = new MainLogic1();
             string messageText;
             string strInput = txtInputRoman.Text;
 
-            if (gfi.AllCharactersPresentedAreUsedInRomaNumbers(strInput))
+            if (ml1.AllCharactersPresentedAreUsedInRomaNumbers(strInput))
             {
-                value = gfi.CalculateArabicNumber(strInput);
+                value = ml1.CalculateArabicNumber(strInput);
+
                 if (value != null)
                 {
                     txtOutputArabic.Text = value.ToString();
@@ -241,7 +252,7 @@ namespace WpfApp1
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }
