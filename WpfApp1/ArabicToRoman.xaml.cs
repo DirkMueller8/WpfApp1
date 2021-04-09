@@ -233,12 +233,12 @@ namespace WpfApp1
             if (resultOfParsing == false)
             {
                 lblMessage.Content = "Sorry, your input was not an integer.";
-                lblMessage.Content += "Please try again.";
+                lblMessage.Content += "\nPlease try again.";
             }
             else if (numberParsed < 0 || numberParsed > 3999)
             {
                 lblMessage.Content = "Sorry, your input was an integer outside the range [0, 3999].";
-                lblMessage.Content += "Please try again.";
+                lblMessage.Content += "\nPlease try again.";
             }
             else
             {

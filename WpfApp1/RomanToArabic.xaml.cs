@@ -73,6 +73,7 @@ namespace WpfApp1
                 cummulativeValue = GetValueForKey(sb[0]);
             }
 
+            Boolean t = false;
             // Traverse the roman number from left to right. Distinguish between
             // the case where a subtraction is necessary, and where not:
             while (i < sb.Length - 1)
@@ -81,6 +82,8 @@ namespace WpfApp1
                 {
                     cummulativeValue += GetValueForKey(sb[i + 1]) - GetValueForKey(sb[i]);
                     i++;
+                    if (i == sb.Length - 2)
+                        t = true;
                 }
                 else
                 {
@@ -89,6 +92,10 @@ namespace WpfApp1
                         cummulativeValue += GetValueForKey(sb[i + 1]);
                 }
                 i++;
+            }
+            if (i == sb.Length - 1 && t)
+            {
+                cummulativeValue += GetValueForKey(sb[i]);
             }
 
             return cummulativeValue;
